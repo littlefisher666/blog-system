@@ -16,4 +16,7 @@ public class CityDto {
 
     /** 城市编码 */
     private String code;
+
+    /** 省份 */
+    private ProvinceDto province;
 }

@@ -22,4 +22,26 @@ public class BaseResponseDto<T> {
 
     /** 返回数据 */
     private T data;
+
+    /**
+     * 成功的返回
+     *
+     * @param data 数据
+     * @return 统一包装的返回
+     */
+    public static <T> BaseResponseDto<T> success(T data) {
+        return BaseResponseDto.<T>builder().success(true).data(data).build();
+    }
+
+    /**
+     * 失败的返回
+     *
+     * @param errorCode    失败code
+     * @param errorMessage 失败说明
+     * @return 统一包装的返回
+     */
+    public static <T> BaseResponseDto<T> fail(String errorCode, String errorMessage) {
+        return BaseResponseDto.<T>builder().success(false).errorCode(errorCode).errorMessage(errorMessage).build();
+    }
+
 }

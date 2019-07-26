@@ -1,9 +1,10 @@
 package com.github.littlefisher.blog.controller;
 
-import com.github.littlefisher.blog.controller.dto.base.BaseResponseDto;
 import com.github.littlefisher.blog.controller.dto.CurrentAuthorDto;
+import com.github.littlefisher.blog.controller.dto.base.BaseResponseDto;
+import com.github.littlefisher.blog.service.AuthorService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,8 +16,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/blog/api/v1/author")
 public class AuthorController {
 
-    @GetMapping("/{id}")
-    public BaseResponseDto<CurrentAuthorDto> queryCurrentAuthor(@PathVariable("id") String id) {
-        return null;
+    @Autowired
+    private AuthorService authorService;
+
+    /**
+     * 查询当前作者
+     *
+     * @return 作者
+     */
+    @GetMapping("/default")
+    public BaseResponseDto<CurrentAuthorDto> queryCurrentAuthor() {
+        return BaseResponseDto.success(authorService.queryCurrentAuthor());
     }
 }

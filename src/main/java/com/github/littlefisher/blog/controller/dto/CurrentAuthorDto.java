@@ -1,9 +1,9 @@
 package com.github.littlefisher.blog.controller.dto;
 
-import java.util.List;
-
 import lombok.Builder;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author jinyanan
@@ -14,7 +14,7 @@ import lombok.Data;
 public class CurrentAuthorDto {
     /** 名称 */
     private String name;
-    /** 头像 */
+    /** 头像地址 */
     private String avatar;
     /** 邮箱 */
     private String email;
@@ -26,8 +26,8 @@ public class CurrentAuthorDto {
     private String group;
     /** 标签 */
     private List<TagDto> tags;
-    /** 坐标 */
-    private GeographicDto geographic;
+    /** 所处城市 */
+    private CityDto city;
     /** 详细地址 */
     private String address;
     /** 手机号 */
