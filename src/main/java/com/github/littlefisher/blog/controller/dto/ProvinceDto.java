@@ -15,5 +15,5 @@ public class ProvinceDto {
     private String name;
 
     /** 省份编码 */
-    private String code;
+    private Integer code;
 }

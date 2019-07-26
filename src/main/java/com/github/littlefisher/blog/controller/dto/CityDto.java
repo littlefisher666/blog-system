@@ -15,7 +15,7 @@ public class CityDto {
     private String name;
 
     /** 城市编码 */
-    private String code;
+    private Integer code;
 
     /** 省份 */
     private ProvinceDto province;

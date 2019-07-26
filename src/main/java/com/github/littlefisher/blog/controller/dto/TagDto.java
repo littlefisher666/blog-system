@@ -15,5 +15,5 @@ public class TagDto {
     private String name;
 
     /** tag编码 */
-    private String code;
+    private Integer code;
 }
