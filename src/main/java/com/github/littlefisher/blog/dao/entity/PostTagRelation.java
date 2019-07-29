@@ -13,19 +13,19 @@ import javax.persistence.Table;
 import lombok.Data;
 
 /**
- * 作者标签关联表
+ * 博文标签关联表
  *
  * @author littlefisher
- * @since 2019-07-26 10:18
+ * @since 2019-07-229 11:51
  */
-@Entity
-@Table(name = "author_tag_relation")
 @Data
-public class AuthorTagRelation implements Serializable {
+@Entity
+@Table(name = "post_tag_relation")
+public class PostTagRelation implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * 关联编号
+     * 关联id
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,27 +33,27 @@ public class AuthorTagRelation implements Serializable {
     private Integer relationId;
 
     /**
-     * 作者id
+     * 博文id
      */
-    @Column(name = "author_id", nullable = false)
-    private Integer authorId;
+    @Column(name = "post_id", nullable = false)
+    private Integer postId;
 
     /**
      * 标签id
      */
-    @Column(name = "tag_code", nullable = false)
-    private Integer tagCode;
+    @Column(name = "tag_id", nullable = false)
+    private Integer tagId;
 
     /**
      * 创建时间
      */
-    @Column(name = "create_time")
+    @Column(name = "create_time", nullable = false)
     private LocalDateTime createTime;
 
     /**
      * 修改时间
      */
-    @Column(name = "update_time")
+    @Column(name = "update_time", nullable = false)
     private LocalDateTime updateTime;
 
 }
