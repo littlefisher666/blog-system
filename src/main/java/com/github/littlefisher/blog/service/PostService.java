@@ -22,10 +22,10 @@ public interface PostService {
     Page<SimplePostDto> queryPostByAuthorId(Integer authorId, PageRequest page);
 
     /**
-     * 查询博文详情
+     * 查询博文
      *
      * @param postId 博文id
-     * @return 博文信息
+     * @return 博文
      */
-    PostDto queryPostDetail(Integer postId);
+    PostDto queryPostContent(Integer postId);
 }

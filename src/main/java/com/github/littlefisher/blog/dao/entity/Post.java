@@ -45,6 +45,12 @@ public class Post implements Serializable {
     private String preview;
 
     /**
+     * 博文内容
+     */
+    @Column(name = "content", nullable = false)
+    private String content;
+
+    /**
      * 作者id
      */
     @Column(name = "author_id", nullable = false)

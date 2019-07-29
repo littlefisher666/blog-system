@@ -41,13 +41,13 @@ public class PostController {
     }
 
     /**
-     * 查询博文明细
+     * 查询博文
      *
      * @param postId 博文id
      * @return 博文
      */
-    @GetMapping("/{postId}")
-    public BaseResponseDto<PostDto> queryPostDetail(@PathVariable("postId") Integer postId) {
-        return BaseResponseDto.success(postService.queryPostDetail(postId));
+    @GetMapping("/{postId}/content")
+    public BaseResponseDto<PostDto> queryPostContent(@PathVariable("postId") Integer postId) {
+        return BaseResponseDto.success(postService.queryPostContent(postId));
     }
 }

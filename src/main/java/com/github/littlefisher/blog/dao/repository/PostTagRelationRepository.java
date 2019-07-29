@@ -20,5 +20,5 @@ public interface PostTagRelationRepository
      * @param postIdList 博文id列表
      * @return 标签关联关系
      */
-    List<PostTagRelation> findByPostIdWithin(List<Integer> postIdList);
+    List<PostTagRelation> findByPostIdIn(List<Integer> postIdList);
 }
