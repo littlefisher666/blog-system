@@ -3,7 +3,6 @@ package com.github.littlefisher.blog.service.impl;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -125,11 +124,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDto queryPostContent(Integer postId) {
-        Optional<Post> optional = postRepository.findById(postId);
-        return optional.map(post -> PostDto.builder()
-            .postId(postId)
-            .content(post.getContent())
-            .build())
+        return postRepository.findById(postId)
+            .map(post -> PostDto.builder()
+                .postId(postId)
+                .content(post.getContent())
+                .build())
             .orElse(null);
     }
 }
