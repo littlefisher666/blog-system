@@ -5,3 +5,7 @@ spring:
     url: jdbc:mysql://106.14.156.120:3306/blog?characterEncoding=utf8
     username: blog
     password: blog
+  jpa:
+    show-sql: true
+logging:
+  file: ./logs/${spring.application.name}.log

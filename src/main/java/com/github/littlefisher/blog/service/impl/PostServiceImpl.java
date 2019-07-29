@@ -52,6 +52,9 @@ public class PostServiceImpl implements PostService {
         query.setAuthorId(authorId);
         Example<Post> example = Example.of(query);
         Page<Post> postPage = postRepository.findAll(example, page);
+        if (postPage.isEmpty()) {
+            return Page.empty(page);
+        }
         List<Integer> authorIdList = postPage.stream()
             .map(Post::getAuthorId)
             .distinct()

@@ -29,14 +29,14 @@ public class PostController {
      * 分页查询作者名下所有博文简介
      *
      * @param authorId 作者id
-     * @param page 分页开始页
+     * @param pageNum 分页开始页
      * @param size 每页数量
      * @return 博文
      */
     @GetMapping
     public BaseResponseDto<Page<SimplePostDto>> queryPostByAuthorId(@RequestParam Integer authorId,
-        @RequestParam Integer page, @RequestParam Integer size) {
-        Page<SimplePostDto> postPage = postService.queryPostByAuthorId(authorId, PageRequest.of(page, size));
+        @RequestParam Integer pageNum, @RequestParam Integer size) {
+        Page<SimplePostDto> postPage = postService.queryPostByAuthorId(authorId, PageRequest.of(pageNum, size));
         return BaseResponseDto.success(postPage);
     }
 
