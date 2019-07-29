@@ -29,7 +29,7 @@ public class PostController {
      * 分页查询作者名下所有博文简介
      *
      * @param authorId 作者id
-     * @param pageNum 分页开始页
+     * @param pageNum 分页开始页，从0开始
      * @param size 每页数量
      * @return 博文
      */
