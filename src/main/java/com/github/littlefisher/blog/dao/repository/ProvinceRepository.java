@@ -1,8 +1,9 @@
 package com.github.littlefisher.blog.dao.repository;
 
-import com.github.littlefisher.blog.dao.entity.Province;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+
+import com.github.littlefisher.blog.dao.entity.Province;
 
 /**
  * @author littlefisher

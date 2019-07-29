@@ -1,9 +1,9 @@
 package com.github.littlefisher.blog.controller.dto;
 
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Data;
-
-import java.util.List;
 
 /**
  * @author jinyanan

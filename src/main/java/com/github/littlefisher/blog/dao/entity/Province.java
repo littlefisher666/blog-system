@@ -1,12 +1,13 @@
 package com.github.littlefisher.blog.dao.entity;
 
-import lombok.Data;
+import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.Serializable;
+
+import lombok.Data;
 
 /**
  * 省份表
@@ -32,6 +33,5 @@ public class Province implements Serializable {
      */
     @Column(name = "name")
     private String name;
-
 
 }

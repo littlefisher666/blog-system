@@ -1,6 +1,7 @@
 package com.github.littlefisher.blog.dao.entity;
 
-import lombok.Data;
+import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,8 +9,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.util.Date;
+
+import lombok.Data;
 
 /**
  * 作者标签关联表
@@ -54,6 +55,5 @@ public class AuthorTagRelation implements Serializable {
      */
     @Column(name = "update_time")
     private Date updateTime;
-
 
 }

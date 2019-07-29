@@ -1,16 +1,18 @@
 package com.github.littlefisher.blog.dao.repository;
 
-import com.github.littlefisher.blog.dao.entity.AuthorTagRelation;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import java.util.List;
+import com.github.littlefisher.blog.dao.entity.AuthorTagRelation;
 
 /**
  * @author littlefisher
  * @since 2019-07-26 10:18
  */
-public interface AuthorTagRelationRepository extends JpaRepository<AuthorTagRelation, Integer>, JpaSpecificationExecutor<AuthorTagRelation> {
+public interface AuthorTagRelationRepository
+    extends JpaRepository<AuthorTagRelation, Integer>, JpaSpecificationExecutor<AuthorTagRelation> {
 
     /**
      * 根据作者id查询标签
