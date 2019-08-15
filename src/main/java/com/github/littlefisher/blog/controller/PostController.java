@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,4 +51,17 @@ public class PostController {
     public BaseResponseDto<PostDto> queryPostContent(@PathVariable("postId") Integer postId) {
         return BaseResponseDto.success(postService.queryPostContent(postId));
     }
+
+    /**
+     * 从本地把原来的markdown存入数据库
+     *
+     * @param directoryPath markdown文件所在目录
+     * @return 处理是否成功
+     */
+    @PostMapping
+    public BaseResponseDto<Boolean> loanFromDisk(@RequestParam String directoryPath) {
+        postService.loanFromDisk(directoryPath);
+        return BaseResponseDto.success(true);
+    }
+
 }

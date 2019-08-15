@@ -28,4 +28,11 @@ public interface PostService {
      * @return 博文
      */
     PostDto queryPostContent(Integer postId);
+
+    /**
+     * 从本地把原来的markdown存入数据库
+     *
+     * @param directoryPath markdown文件所在目录
+     */
+    void loanFromDisk(String directoryPath);
 }

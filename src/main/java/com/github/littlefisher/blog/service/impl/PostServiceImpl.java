@@ -1,16 +1,27 @@
 package com.github.littlefisher.blog.service.impl;
 
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.github.littlefisher.blog.controller.dto.PostDto;
 import com.github.littlefisher.blog.controller.dto.SimplePostDto;
@@ -23,9 +34,14 @@ import com.github.littlefisher.blog.dao.repository.AuthorRepository;
 import com.github.littlefisher.blog.dao.repository.PostRepository;
 import com.github.littlefisher.blog.dao.repository.PostTagRelationRepository;
 import com.github.littlefisher.blog.dao.repository.TagRepository;
+import com.github.littlefisher.blog.exception.FileNotFoundException;
 import com.github.littlefisher.blog.service.PostService;
+import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author jinyanan
@@ -45,6 +61,10 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private TagRepository tagRepository;
+
+    private static final String PATTERN_STR = "<!--[\\s]*more[\\s]*-->\\n";
+
+    private static final Pattern PATTERN = Pattern.compile(PATTERN_STR);
 
     @Override
     public Page<SimplePostDto> queryPostByAuthorId(Integer authorId, PageRequest page) {
@@ -133,5 +153,115 @@ public class PostServiceImpl implements PostService {
                 .content(post.getContent())
                 .build())
             .orElse(null);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void loanFromDisk(String directoryPath) {
+        Path path = Paths.get(directoryPath);
+        if (Files.isDirectory(path)) {
+            try (DirectoryStream<Path> dir = Files.newDirectoryStream(path)) {
+                dir.forEach(this::processMarkdown);
+            } catch (IOException e) {
+                throw new FileNotFoundException("文件路径不存在");
+            }
+        }
+    }
+
+    private void processMarkdown(Path path) {
+        String markdown = readFile(path);
+        String titleStr = title(markdown);
+        Title title = processTitle(titleStr);
+        String mainBody = markdown.substring(titleStr.length());
+        String overview = processOverview(mainBody);
+        String content = processContent(mainBody);
+    }
+
+    private String processContent(String mainBody) {
+        return mainBody.replaceAll(PATTERN_STR, StringUtils.EMPTY);
+    }
+
+    private String processOverview(String mainBody) {
+        Matcher matcher = PATTERN.matcher(mainBody);
+        if (matcher.find()) {
+            int moreStartIndex = matcher.start();
+            return mainBody.substring(0, moreStartIndex);
+        } else {
+            return mainBody;
+        }
+    }
+
+    private String readFile(Path path) {
+        try {
+            return new String(Files.readAllBytes(path));
+        } catch (IOException e) {
+            throw new FileNotFoundException("文件路径不存在");
+        }
+    }
+
+    private String title(String markdown) {
+        int beginIndex = markdown.indexOf("---");
+        int endIndex = markdown.indexOf("---", beginIndex + "---".length());
+        return markdown.substring(beginIndex, endIndex + "---".length());
+    }
+
+    private Title processTitle(String titleStr) {
+        int beginIndex = titleStr.indexOf("---") + "---".length();
+        int endIndex = titleStr.indexOf("---", beginIndex);
+        titleStr = titleStr.substring(beginIndex, endIndex);
+        List<String> lines = Splitter.on('\n')
+            .trimResults()
+            .omitEmptyStrings()
+            .splitToList(titleStr);
+        Title title = new Title();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        for (String line : lines) {
+            List<String> items = Splitter.on(':')
+                .trimResults()
+                .omitEmptyStrings()
+                .splitToList(line);
+            if (Title.TITLE.equals(items.get(0))) {
+                title.setTitle(items.get(1));
+                continue;
+            }
+            if (Title.CREATE_TIME.equals(items.get(0))) {
+                title.setCreateTime(LocalDate.parse(items.get(1), formatter));
+                continue;
+            }
+            if (Title.CATEGORY.equals(items.get(0))) {
+                title.setCategory(items.get(1));
+                continue;
+            }
+            if (Title.TAGS.equals(items.get(0))) {
+                String value = items.get(1);
+                List<String> tags = Splitter.on(',')
+                    .trimResults()
+                    .omitEmptyStrings()
+                    .splitToList(value.substring(value.indexOf("[") + "[".length(), value.lastIndexOf("]")));
+                title.setTags(tags);
+            }
+        }
+        return title;
+    }
+
+    @Data
+    @NoArgsConstructor
+    private static class Title {
+
+        private static final String TITLE = "title";
+
+        private static final String CREATE_TIME = "date";
+
+        private static final String CATEGORY = "categories";
+
+        private static final String TAGS = "tags";
+
+        private String title;
+
+        private LocalDate createTime;
+
+        private String category;
+
+        private List<String> tags;
     }
 }
