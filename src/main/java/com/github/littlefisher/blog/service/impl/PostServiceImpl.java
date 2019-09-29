@@ -1,15 +1,20 @@
 package com.github.littlefisher.blog.service.impl;
 
 import java.io.IOException;
-import java.nio.file.DirectoryStream;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -40,14 +45,18 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author jinyanan
  * @since 2019-07-29 11:04
  */
 @Service
+@Slf4j
 public class PostServiceImpl implements PostService {
 
     @Autowired
@@ -65,6 +74,8 @@ public class PostServiceImpl implements PostService {
     private static final String PATTERN_STR = "<!--[\\s]*more[\\s]*-->\\n";
 
     private static final Pattern PATTERN = Pattern.compile(PATTERN_STR);
+
+    private static final Integer DEFAULT_AUTHOR_ID = 1;
 
     @Override
     public Page<SimplePostDto> queryPostByAuthorId(Integer authorId, PageRequest page) {
@@ -157,24 +168,110 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void loanFromDisk(String directoryPath) {
+    public void loanFromDisk(String directoryPath, String statisticPath) {
+        List<MarkdownInfo> markdownInfoList = getMarkdown(directoryPath);
+        Map<String, Integer> readTimesMap = getReadTimes(statisticPath);
+        insertMarkdown(markdownInfoList, readTimesMap);
+    }
+
+    private void insertMarkdown(List<MarkdownInfo> markdownInfoList, Map<String, Integer> readTimesMap) {
+        markdownInfoList.forEach(markdown -> {
+            log.debug("start insert post, title: [{}]", markdown.getTitle().getTitle());
+            Integer readTimes = readTimesMap.get(markdown.getTitle()
+                .getTitle());
+            Post post = new Post();
+            post.setAuthorId(DEFAULT_AUTHOR_ID);
+            post.setContent(markdown.getContent());
+            post.setCreateTime(markdown.getTitle()
+                .getCreateTime()
+                .atTime(0, 0));
+            post.setLikedTimes(0);
+            post.setPreview(markdown.getOverview());
+            post.setReadTimes(readTimes);
+            post.setTitle(markdown.getTitle()
+                .getTitle());
+            post.setUpdateTime(LocalDateTime.now());
+            Post postInDb = postRepository.save(post);
+            List<String> tags = markdown.getTitle()
+                .getTags();
+            tags.forEach(tag -> {
+                Optional<Tag> tagOptional = tagRepository.findOneByName(tag);
+                Tag tagInDb = tagOptional.orElseGet(() -> {
+                    Tag newTag = new Tag();
+                    newTag.setName(tag);
+                    newTag.setCreateTime(LocalDateTime.now());
+                    newTag.setUpdateTime(LocalDateTime.now());
+                    return tagRepository.save(newTag);
+                });
+                PostTagRelation relation = new PostTagRelation();
+                relation.setPostId(postInDb.getPostId());
+                relation.setTagId(tagInDb.getCode());
+                relation.setCreateTime(LocalDateTime.now());
+                relation.setUpdateTime(LocalDateTime.now());
+                postTagRelationRepository.save(relation);
+            });
+            log.debug("end insert post, title: [{}]", markdown.getTitle().getTitle());
+        });
+    }
+
+    private Map<String, Integer> getReadTimes(String statisticPath) {
+        Path path = Paths.get(statisticPath);
+        List<String> lines;
+        try {
+            lines = Files.readAllLines(path);
+        } catch (IOException e) {
+            throw new FileNotFoundException("文件路径不存在");
+        }
+        return lines.stream()
+            .map(line -> {
+                List<String> statistic = Splitter.on(',')
+                    .trimResults()
+                    .omitEmptyStrings()
+                    .splitToList(line);
+                String title = statistic.get(0)
+                    .startsWith("/") ? statistic.get(0)
+                    .substring("/".length()) : statistic.get(0);
+                Integer readTimes = StringUtils.isEmpty(statistic.get(1)) ? 0 : Integer.parseInt(statistic.get(1));
+                return ReadTimes.builder()
+                    .title(title)
+                    .readTimes(readTimes)
+                    .build();
+            })
+            .collect(Collectors.toMap(ReadTimes::getTitle, ReadTimes::getReadTimes, Integer::sum));
+
+    }
+
+    private List<MarkdownInfo> getMarkdown(String directoryPath) {
         Path path = Paths.get(directoryPath);
         if (Files.isDirectory(path)) {
-            try (DirectoryStream<Path> dir = Files.newDirectoryStream(path)) {
-                dir.forEach(this::processMarkdown);
+            MarkdownVisitor visitor = new MarkdownVisitor(".md");
+            try {
+                Files.walkFileTree(path, visitor);
             } catch (IOException e) {
                 throw new FileNotFoundException("文件路径不存在");
             }
+            return visitor.getMarkdownFilePath()
+                .stream()
+                .map(this::processMarkdown)
+                .collect(Collectors.toList());
+        } else {
+            throw new FileNotFoundException("文件路径不存在");
         }
+
     }
 
-    private void processMarkdown(Path path) {
+    private MarkdownInfo processMarkdown(Path path) {
         String markdown = readFile(path);
         String titleStr = title(markdown);
         Title title = processTitle(titleStr);
         String mainBody = markdown.substring(titleStr.length());
         String overview = processOverview(mainBody);
         String content = processContent(mainBody);
+        return MarkdownInfo.builder()
+            .title(title)
+            .overview(overview)
+            .content(content)
+            .build();
     }
 
     private String processContent(String mainBody) {
@@ -234,11 +331,15 @@ public class PostServiceImpl implements PostService {
             }
             if (Title.TAGS.equals(items.get(0))) {
                 String value = items.get(1);
-                List<String> tags = Splitter.on(',')
-                    .trimResults()
-                    .omitEmptyStrings()
-                    .splitToList(value.substring(value.indexOf("[") + "[".length(), value.lastIndexOf("]")));
-                title.setTags(tags);
+                if (value.startsWith("[") && value.endsWith("]")) {
+                    List<String> tags = Splitter.on(',')
+                        .trimResults()
+                        .omitEmptyStrings()
+                        .splitToList(value.substring(value.indexOf("[") + "[".length(), value.lastIndexOf("]")));
+                    title.setTags(tags);
+                } else {
+                    title.setTags(Lists.newArrayList(value));
+                }
             }
         }
         return title;
@@ -262,6 +363,47 @@ public class PostServiceImpl implements PostService {
 
         private String category;
 
-        private List<String> tags;
+        private List<String> tags = new ArrayList<>();
+    }
+
+    @Data
+    @Builder
+    private static class MarkdownInfo {
+
+        private Title title;
+
+        private String overview;
+
+        private String content;
+    }
+
+    @Data
+    @Builder
+    private static class ReadTimes {
+
+        private String title;
+
+        private Integer readTimes;
+    }
+
+    private static class MarkdownVisitor extends SimpleFileVisitor<Path> {
+
+        private String fileSuffix;
+
+        @Getter
+        private List<Path> markdownFilePath = Lists.newArrayList();
+
+        MarkdownVisitor(String fileSuffix) {
+            this.fileSuffix = fileSuffix;
+        }
+
+        @Override
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+            if (file.toString()
+                .endsWith(fileSuffix)) {
+                markdownFilePath.add(file);
+            }
+            return FileVisitResult.CONTINUE;
+        }
     }
 }

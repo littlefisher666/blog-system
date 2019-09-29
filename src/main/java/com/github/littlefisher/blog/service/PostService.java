@@ -33,6 +33,7 @@ public interface PostService {
      * 从本地把原来的markdown存入数据库
      *
      * @param directoryPath markdown文件所在目录
+     * @param statisticPath 统计文件地址
      */
-    void loanFromDisk(String directoryPath);
+    void loanFromDisk(String directoryPath, String statisticPath);
 }

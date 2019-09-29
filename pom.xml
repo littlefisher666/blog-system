@@ -19,6 +19,7 @@
         <commons-collections4.version>4.4</commons-collections4.version>
         <commons-lang3.version>3.9</commons-lang3.version>
         <guava.version>28.0-jre</guava.version>
+        <jsch.version>0.1.55</jsch.version>
     </properties>
 
     <dependencies>
@@ -48,6 +49,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>${jsch.version}</version>
         </dependency>
 
         <dependency>

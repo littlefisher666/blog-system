@@ -20,6 +20,6 @@ public class PostServiceTest {
     @Test
     public void loanFromDisk() {
         postService.loanFromDisk(
-            "/Users/littlefisher/Documents/LittleFisher/Workspaces/myself/CI_LitterFisher/source/_posts");
+            "/Users/littlefisher/Documents/LittleFisher/Workspaces/myself/CI_LitterFisher/source/_posts", "/Users/littlefisher/Downloads/statistic.csv");
     }
 }

@@ -1,7 +1,7 @@
 package com.github.littlefisher.blog.dao.entity;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -42,12 +42,12 @@ public class Tag implements Serializable {
      * 创建时间
      */
     @Column(name = "create_time", nullable = false)
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 修改时间
      */
     @Column(name = "update_time", nullable = false)
-    private Date updateTime;
+    private LocalDateTime updateTime;
 
 }

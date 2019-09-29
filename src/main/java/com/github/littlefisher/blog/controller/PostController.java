@@ -59,8 +59,8 @@ public class PostController {
      * @return 处理是否成功
      */
     @PostMapping
-    public BaseResponseDto<Boolean> loanFromDisk(@RequestParam String directoryPath) {
-        postService.loanFromDisk(directoryPath);
+    public BaseResponseDto<Boolean> loanFromDisk(@RequestParam String directoryPath, @RequestParam String statisticPath) {
+        postService.loanFromDisk(directoryPath, statisticPath);
         return BaseResponseDto.success(true);
     }
 
