@@ -4,9 +4,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.github.littlefisher.blog.controller.dto.PostDto;
+import com.github.littlefisher.blog.controller.dto.SimplePostDto;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -32,5 +36,13 @@ public class PostServiceTest {
     public void queryPostContent() {
         PostDto post = postService.queryPostContent(238);
         assertNotNull(post);
+    }
+
+    @Test
+    public void queryPostByAuthorId() {
+        Integer authorId = 1;
+        Page<SimplePostDto> postPage = postService.queryPostByAuthorId(authorId, PageRequest.of(1, 20, Sort.by(
+            Sort.Order.desc("createTime"))));
+        assertNotNull(postPage);
     }
 }
