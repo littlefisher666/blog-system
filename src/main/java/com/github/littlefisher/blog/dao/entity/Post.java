@@ -45,10 +45,10 @@ public class Post implements Serializable {
     private String preview;
 
     /**
-     * 博文内容
+     * 博文地址
      */
-    @Column(name = "content", nullable = false)
-    private String content;
+    @Column(name = "content_url", nullable = false)
+    private String contentUrl;
 
     /**
      * 作者id

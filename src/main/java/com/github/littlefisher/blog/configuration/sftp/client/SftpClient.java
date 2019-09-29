@@ -18,6 +18,14 @@ public interface SftpClient {
     byte[] getFile(String directory, String fileName);
 
     /**
+     * 下载文件
+     *
+     * @param filePath 文件路径，带文件名
+     * @return 文件byte数组
+     */
+    byte[] getFile(String filePath);
+
+    /**
      * 上传文件
      *
      * @param directory 上传文件目录

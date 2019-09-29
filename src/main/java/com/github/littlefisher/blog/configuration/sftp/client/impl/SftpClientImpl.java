@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import com.github.littlefisher.blog.configuration.sftp.client.SftpClient;
 import com.github.littlefisher.blog.exception.SftpServerException;
@@ -42,6 +43,9 @@ public class SftpClientImpl implements SftpClient {
     /** sftp密码 */
     private Integer port;
 
+    /** 分隔符 */
+    private static final String SEPARATOR = "/";
+
     @Override
     public byte[] getFile(String directory, String fileName) {
         // 连接FTP服务器
@@ -58,6 +62,23 @@ public class SftpClientImpl implements SftpClient {
             }
         } else {
             throw new SftpServerException("进入目标目录失败");
+        }
+    }
+
+    @Override
+    public byte[] getFile(String filePath) {
+        if (filePath.contains(SEPARATOR)) {
+            List<String> pathList = Splitter.on(SEPARATOR)
+                .omitEmptyStrings()
+                .trimResults()
+                .splitToList(filePath);
+            String fileDirectory = pathList.stream()
+                .limit(pathList.size() - 1)
+                .collect(Collectors.joining(SEPARATOR));
+            String fileName = pathList.get(pathList.size() - 1);
+            return getFile(fileDirectory, fileName);
+        } else {
+            return getFile(SEPARATOR, filePath);
         }
     }
 

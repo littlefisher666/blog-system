@@ -1,5 +1,6 @@
 package com.github.littlefisher.blog.service.impl;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -28,6 +29,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.littlefisher.blog.configuration.sftp.client.SftpClient;
 import com.github.littlefisher.blog.controller.dto.PostDto;
 import com.github.littlefisher.blog.controller.dto.SimplePostDto;
 import com.github.littlefisher.blog.controller.dto.TagDto;
@@ -71,11 +73,20 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private TagRepository tagRepository;
 
+    @Autowired
+    private SftpClient sftpClient;
+
     private static final String PATTERN_STR = "<!--[\\s]*more[\\s]*-->\\n";
 
     private static final Pattern PATTERN = Pattern.compile(PATTERN_STR);
 
     private static final Integer DEFAULT_AUTHOR_ID = 1;
+
+    /** 文件上传默认前缀 */
+    private static final String DEFAULT_FILE_PREFIX = File.separator + "upload";
+
+    /** markdown文件后缀 */
+    private static final String MARKDOWN_SUFFIX = ".md";
 
     @Override
     public Page<SimplePostDto> queryPostByAuthorId(Integer authorId, PageRequest page) {
@@ -159,10 +170,14 @@ public class PostServiceImpl implements PostService {
     @Override
     public PostDto queryPostContent(Integer postId) {
         return postRepository.findById(postId)
-            .map(post -> PostDto.builder()
-                .postId(postId)
-                .content(post.getContent())
-                .build())
+            .map(post -> {
+                String contentUrl = post.getContentUrl();
+                byte[] content = sftpClient.getFile(contentUrl);
+                return PostDto.builder()
+                    .postId(postId)
+                    .content(new String(content))
+                    .build();
+            })
             .orElse(null);
     }
 
@@ -176,12 +191,13 @@ public class PostServiceImpl implements PostService {
 
     private void insertMarkdown(List<MarkdownInfo> markdownInfoList, Map<String, Integer> readTimesMap) {
         markdownInfoList.forEach(markdown -> {
-            log.debug("start insert post, title: [{}]", markdown.getTitle().getTitle());
+            log.debug("start insert post, title: [{}]", markdown.getTitle()
+                .getTitle());
             Integer readTimes = readTimesMap.get(markdown.getTitle()
                 .getTitle());
             Post post = new Post();
             post.setAuthorId(DEFAULT_AUTHOR_ID);
-            post.setContent(markdown.getContent());
+            // post.setContent(markdown.getContent());
             post.setCreateTime(markdown.getTitle()
                 .getCreateTime()
                 .atTime(0, 0));
@@ -210,7 +226,8 @@ public class PostServiceImpl implements PostService {
                 relation.setUpdateTime(LocalDateTime.now());
                 postTagRelationRepository.save(relation);
             });
-            log.debug("end insert post, title: [{}]", markdown.getTitle().getTitle());
+            log.debug("end insert post, title: [{}]", markdown.getTitle()
+                .getTitle());
         });
     }
 
