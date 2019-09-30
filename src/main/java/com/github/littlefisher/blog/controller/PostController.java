@@ -3,7 +3,6 @@ package com.github.littlefisher.blog.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,8 +37,7 @@ public class PostController {
     @GetMapping
     public BaseResponseDto<Page<SimplePostDto>> queryPostByAuthorId(@RequestParam Integer authorId,
         @RequestParam Integer pageNum, @RequestParam Integer size) {
-        Page<SimplePostDto> postPage = postService.queryPostByAuthorId(authorId, PageRequest.of(pageNum, size, Sort.by(
-            Sort.Order.desc("createTime"))));
+        Page<SimplePostDto> postPage = postService.queryPostByAuthorId(authorId, PageRequest.of(pageNum, size));
         return BaseResponseDto.success(postPage);
     }
 
