@@ -12,6 +12,8 @@ import lombok.Data;
 @Data
 @Builder
 public class CurrentAuthorDto {
+    /** 作者id */
+    private Integer authorId;
     /** 名称 */
     private String name;
     /** 头像地址 */

@@ -54,6 +54,7 @@ public class AuthorServiceImpl implements AuthorService {
         Author currentAuthor = authorRepository.getOne(DEFAULT_AUTHOR_ID);
         if (currentAuthor != null) {
             return CurrentAuthorDto.builder()
+                .authorId(currentAuthor.getAuthorId())
                 .address(currentAuthor.getAddress())
                 .avatar(currentAuthor.getAvatar())
                 .email(currentAuthor.getEmail())
