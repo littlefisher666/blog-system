@@ -13,7 +13,7 @@ sftp:
 
 jasypt:
   encryptor:
-    password: 'eM!C7mf%'
+    password: ***
 ---
 spring:
   profiles: dev

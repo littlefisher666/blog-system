@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.github.littlefisher.blog</groupId>
     <artifactId>blog-system</artifactId>
-    <version>1.0.1</version>
+    <version>1.0.2-SNAPSHOT</version>
     <name>blog-system</name>
     <description>博客系统</description>
 
@@ -20,6 +20,7 @@
         <commons-lang3.version>3.9</commons-lang3.version>
         <guava.version>28.0-jre</guava.version>
         <jsch.version>0.1.55</jsch.version>
+        <jasypt-spring-boot-starter>2.1.2</jasypt-spring-boot-starter>
     </properties>
 
     <dependencies>
@@ -34,6 +35,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
+            <version>${jasypt-spring-boot-starter}</version>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
