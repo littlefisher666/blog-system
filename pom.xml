@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.github.littlefisher.blog</groupId>
     <artifactId>blog-system</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3-SNAPSHOT</version>
     <name>blog-system</name>
     <description>博客系统</description>
 

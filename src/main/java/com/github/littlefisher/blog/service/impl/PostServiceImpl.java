@@ -174,10 +174,22 @@ public class PostServiceImpl implements PostService {
         return postRepository.findById(postId)
             .map(post -> {
                 String contentUrl = post.getContentUrl();
+                Map<Integer, Author> authorMap = queryAuthorInfo(Lists.newArrayList(post.getAuthorId()));
+                Author author = authorMap.get(post.getAuthorId());
+                Map<Integer, List<TagDto>> tagListMap = queryPostTag(Lists.newArrayList(postId));
+                List<TagDto> tagList = tagListMap.get(postId);
                 byte[] content = sftpClient.getFile(contentUrl);
                 return PostDto.builder()
                     .postId(postId)
                     .content(new String(content))
+                    .authorId(post.getAuthorId())
+                    .authorName(author == null ? null : author.getName())
+                    .likedTimes(post.getLikedTimes())
+                    .createTime(post.getCreateTime())
+                    .previewContent(post.getPreview())
+                    .readTimes(post.getReadTimes())
+                    .tagList(CollectionUtils.isEmpty(tagList) ? Lists.newArrayList() : tagList)
+                    .title(post.getTitle())
                     .build();
             })
             .orElse(null);

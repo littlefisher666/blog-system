@@ -5,13 +5,14 @@ import java.util.List;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 /**
  * @author jinyanan
  * @since 2019-07-29 10:12
  */
 @Data
-@Builder
+@SuperBuilder
 public class SimplePostDto {
 
     /** 博文id */
