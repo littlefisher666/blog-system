@@ -203,6 +203,12 @@ public class PostServiceImpl implements PostService {
         insertMarkdown(markdownInfoList, readTimesMap);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void read(Integer postId) {
+        postRepository.updateReadTimes(postId);
+    }
+
     private void insertMarkdown(List<MarkdownInfo> markdownInfoList, Map<String, Integer> readTimesMap) {
         markdownInfoList.forEach(markdown -> {
             log.debug("start insert post, title: [{}]", markdown.getTitle()

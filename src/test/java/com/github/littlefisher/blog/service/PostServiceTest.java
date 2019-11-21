@@ -45,4 +45,10 @@ public class PostServiceTest {
             Sort.Order.desc("createTime"))));
         assertNotNull(postPage);
     }
+
+    @Test
+    public void read() {
+        Integer postId = 229;
+        postService.read(postId);
+    }
 }

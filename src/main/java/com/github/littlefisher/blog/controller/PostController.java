@@ -52,6 +52,12 @@ public class PostController {
         return BaseResponseDto.success(postService.queryPostContent(postId));
     }
 
+    @PostMapping("/{postId}/read")
+    public BaseResponseDto<Void> read(@PathVariable("postId") Integer postId) {
+        postService.read(postId);
+        return BaseResponseDto.success();
+    }
+
     /**
      * 从本地把原来的markdown存入数据库
      *

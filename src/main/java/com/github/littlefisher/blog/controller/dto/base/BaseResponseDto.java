@@ -36,6 +36,16 @@ public class BaseResponseDto<T> {
     }
 
     /**
+     * 成功但无返回参数的返回
+     *
+     * @return 统一包装的返回
+     */
+    public static BaseResponseDto<Void> success() {
+        return BaseResponseDto.<Void>builder().success(true)
+            .build();
+    }
+
+    /**
      * 失败的返回
      *
      * @param errorCode 失败code

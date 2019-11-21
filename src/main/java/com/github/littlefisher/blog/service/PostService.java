@@ -36,4 +36,11 @@ public interface PostService {
      * @param statisticPath 统计文件地址
      */
     void loanFromDisk(String directoryPath, String statisticPath);
+
+    /**
+     * 增加阅读数
+     *
+     * @param postId 博文id
+     */
+    void read(Integer postId);
 }
