@@ -16,10 +16,11 @@ public interface PostService {
      * 分页查询博文信息
      *
      * @param authorId 作者id
+     * @param tagId 标签id
      * @param page 分页信息
      * @return 博文信息
      */
-    Page<SimplePostDto> queryPostByAuthorId(Integer authorId, PageRequest page);
+    Page<SimplePostDto> queryPostByAuthorId(Integer authorId, Integer tagId, PageRequest page);
 
     /**
      * 查询博文

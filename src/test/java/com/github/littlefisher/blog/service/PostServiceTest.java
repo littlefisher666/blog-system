@@ -41,8 +41,8 @@ public class PostServiceTest {
     @Test
     public void queryPostByAuthorId() {
         Integer authorId = 1;
-        Page<SimplePostDto> postPage = postService.queryPostByAuthorId(authorId, PageRequest.of(0, 20, Sort.by(
-            Sort.Order.desc("createTime"))));
+        Page<SimplePostDto> postPage = postService.queryPostByAuthorId(authorId, null, PageRequest.of(0, 20, Sort.by(
+            Sort.Order.desc("create_time"))));
         assertNotNull(postPage);
     }
 

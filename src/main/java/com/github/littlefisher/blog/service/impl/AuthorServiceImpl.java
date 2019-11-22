@@ -52,38 +52,33 @@ public class AuthorServiceImpl implements AuthorService {
     @Override
     public CurrentAuthorDto queryCurrentAuthor() {
         Author currentAuthor = authorRepository.getOne(DEFAULT_AUTHOR_ID);
-        if (currentAuthor != null) {
-            return CurrentAuthorDto.builder()
-                .authorId(currentAuthor.getAuthorId())
-                .address(currentAuthor.getAddress())
-                .avatar(currentAuthor.getAvatar())
-                .email(currentAuthor.getEmail())
-                .group(currentAuthor.getGroup())
-                .job(currentAuthor.getJob())
-                .name(currentAuthor.getName())
-                .phone(currentAuthor.getPhone())
-                .signature(currentAuthor.getSignature())
-                .city(queryAuthorCity(currentAuthor.getCityCode()))
-                .tags(queryAuthorTag(currentAuthor.getAuthorId()))
-                .build();
-        }
-        return null;
+        return CurrentAuthorDto.builder()
+            .authorId(currentAuthor.getAuthorId())
+            .address(currentAuthor.getAddress())
+            .avatar(currentAuthor.getAvatar())
+            .email(currentAuthor.getEmail())
+            .group(currentAuthor.getGroup())
+            .job(currentAuthor.getJob())
+            .name(currentAuthor.getName())
+            .phone(currentAuthor.getPhone())
+            .signature(currentAuthor.getSignature())
+            .city(queryAuthorCity(currentAuthor.getCityCode()))
+            .authorTags(queryAuthorTag(currentAuthor.getAuthorId()))
+            .postTags(queryPostTag(currentAuthor.getAuthorId()))
+            .build();
     }
 
     private CityDto queryAuthorCity(Integer cityCode) {
         City city = cityRepository.getOne(cityCode);
-        if (city != null) {
-            Province province = provinceRepository.getOne(city.getProvinceCode());
-            return CityDto.builder()
-                .code(city.getCode())
-                .name(city.getName())
-                .province(ProvinceDto.builder()
-                    .name(province.getName())
-                    .code(province.getCode())
-                    .build())
-                .build();
-        }
-        return null;
+        Province province = provinceRepository.getOne(city.getProvinceCode());
+        return CityDto.builder()
+            .code(city.getCode())
+            .name(city.getName())
+            .province(ProvinceDto.builder()
+                .name(province.getName())
+                .code(province.getCode())
+                .build())
+            .build();
     }
 
     private List<TagDto> queryAuthorTag(Integer authorId) {
@@ -102,5 +97,15 @@ public class AuthorServiceImpl implements AuthorService {
                 .collect(Collectors.toList());
         }
         return Collections.emptyList();
+    }
+
+    private List<TagDto> queryPostTag(Integer authorId) {
+        List<Tag> tagList = tagRepository.queryPostTagByAuthorId(authorId);
+        return tagList.stream()
+            .map(input -> TagDto.builder()
+                .name(input.getName())
+                .code(input.getCode())
+                .build())
+            .collect(Collectors.toList());
     }
 }

@@ -27,7 +27,9 @@ public class CurrentAuthorDto {
     /** 团队 */
     private String group;
     /** 标签 */
-    private List<TagDto> tags;
+    private List<TagDto> authorTags;
+    /** 博文标签 */
+    private List<TagDto> postTags;
     /** 所处城市 */
     private CityDto city;
     /** 详细地址 */

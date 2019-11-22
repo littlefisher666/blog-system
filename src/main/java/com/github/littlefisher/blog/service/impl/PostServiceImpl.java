@@ -90,12 +90,18 @@ public class PostServiceImpl implements PostService {
     private static final String MARKDOWN_SUFFIX = ".md";
 
     @Override
-    public Page<SimplePostDto> queryPostByAuthorId(Integer authorId, PageRequest page) {
-        Post query = new Post();
-        query.setAuthorId(authorId);
-        Example<Post> example = Example.of(query);
-        page = PageRequest.of(page.getPageNumber(), page.getPageSize(), Sort.by(Sort.Order.desc("createTime")));
-        Page<Post> postPage = postRepository.findAll(example, page);
+    public Page<SimplePostDto> queryPostByAuthorId(Integer authorId, Integer tagId, PageRequest page) {
+        Page<Post> postPage;
+        if (tagId == null) {
+            Post query = new Post();
+            query.setAuthorId(authorId);
+            Example<Post> example = Example.of(query);
+            page = PageRequest.of(page.getPageNumber(), page.getPageSize(), Sort.by(Sort.Order.desc("createTime")));
+            postPage = postRepository.findAll(example, page);
+        } else {
+            page = PageRequest.of(page.getPageNumber(), page.getPageSize(), Sort.by(Sort.Order.desc("create_time")));
+            postPage = postRepository.findByAuthorIdAndTag(authorId, tagId, page);
+        }
         if (postPage.isEmpty()) {
             return Page.empty(page);
         }

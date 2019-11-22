@@ -34,10 +34,26 @@ public class PostController {
      * @param size 每页数量
      * @return 博文
      */
-    @GetMapping
-    public BaseResponseDto<Page<SimplePostDto>> queryPostByAuthorId(@RequestParam Integer authorId,
+    @GetMapping("/author/{authorId}")
+    public BaseResponseDto<Page<SimplePostDto>> queryPostByAuthorId(@PathVariable Integer authorId,
         @RequestParam Integer pageNum, @RequestParam Integer size) {
-        Page<SimplePostDto> postPage = postService.queryPostByAuthorId(authorId, PageRequest.of(pageNum, size));
+        Page<SimplePostDto> postPage = postService.queryPostByAuthorId(authorId, null, PageRequest.of(pageNum, size));
+        return BaseResponseDto.success(postPage);
+    }
+
+    /**
+     * 分页查询作者名下所有博文简介
+     *
+     * @param authorId 作者id
+     * @param tagId 标签id
+     * @param pageNum 分页开始页，从0开始
+     * @param size 每页数量
+     * @return 博文
+     */
+    @GetMapping("/author/{authorId}/tag/{tagId}")
+    public BaseResponseDto<Page<SimplePostDto>> queryPostByAuthorIdAndTag(@PathVariable Integer authorId,
+        @PathVariable Integer tagId, @RequestParam Integer pageNum, @RequestParam Integer size) {
+        Page<SimplePostDto> postPage = postService.queryPostByAuthorId(authorId, tagId, PageRequest.of(pageNum, size));
         return BaseResponseDto.success(postPage);
     }
 
