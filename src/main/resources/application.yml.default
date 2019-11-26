@@ -3,13 +3,62 @@ spring:
     active: dev
   application:
     name: blog
-  jpa:
-    show-sql: true
+  datasource:
+    druid:
+      # 初始化大小
+      initial-size: 0
+      # 配置初始化最大值
+      max-active: 20
+      # 最小连接池数量
+      min-idle: 0
+      # 获取连接等待超时的时间
+      max-wait: 60000
+      # 心跳检测语句
+      validation-query: SELECT NOW()
+      # 申请连接时执行validationQuery检测连接是否有效
+      test-on-borrow: false
+      # 归还连接时执行validationQuery检测连接是否有效
+      test-on-return: false
+      # 申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis 执行validationQuery检测连接是否有效
+      # 建议配置为true，不影响性能，并且保证安全性
+      test-while-idle: true
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      time-between-eviction-runs-millis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      min-evictable-idle-time-millis: 25200000
+      # 对于长时间不使用的连接强制关闭
+      remove-abandoned: true
+      # 超过30分钟开始关闭空闲连接
+      remove-abandoned-timeout: 1800
+      # 将当前关闭动作记录到日志
+      log-abandoned: true
+      # druid filters的别名保存在下面的地址中
+      # druid-xxx.jar!/META-INF/druid-filter.properties
+      # 配置多个英文逗号分隔
+      filters: mergeStat
+      filter:
+        log4j2:
+          statement-executable-sql-log-enable: true
+        config:
+          enabled: true
 logging:
   file: ./logs/${spring.application.name}.log
 
 sftp:
   port: 22
+
+mybatis:
+  # mapper文件扫描路径
+  mapper-locations: classpath*:com/github/littlefisher/blog/dao/mapper/**/*.xml
+
+mapper:
+  identity: mysql
+  mappers: com.github.littlefisher.mybatis.common.CommonMapper
+  wrap-keyword: '`{0}`'
+
+pagehelper:
+  helper-dialect: mysql
+  page-size-zero: true
 
 jasypt:
   encryptor:
@@ -18,14 +67,15 @@ jasypt:
 spring:
   profiles: dev
   datasource:
-    url: jdbc:mysql://106.14.156.120:3306/blog?characterEncoding=utf8
-    username: blog
-    password: ENC(P/GHj2mw+RxcRXpQ7DZmdjSWdb2QZXNE)
+    url: jdbc:mysql://106.14.156.120:3306/blog_test?characterEncoding=utf8
+    username: blog_test
+    password: Blog_test_123
 sftp:
   ip: 106.14.156.120
   password: ENC(q407pk+ZQ+2JCT7hl3xoJ5lqhr3mmnLL)
   user-name: sftp4Blog
-
+server:
+  port: 8081
 ---
 spring:
   profiles: product
