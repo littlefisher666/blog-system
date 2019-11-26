@@ -1,47 +1,61 @@
-package com.github.littlefisher.blog.dao.entity;
+package com.github.littlefisher.blog.dao.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+
 
 /**
- * 作者标签关联表
  *
+ * author_tag_relation 实体<br>
+ * <br>
+ *
+ * Created on 2019年11月25日
  * @author littlefisher
- * @since 2019-07-26 10:18
+ * @version 2.1
+ * @since v2.1
  */
-@Entity
 @Table(name = "author_tag_relation")
-@Data
-public class AuthorTagRelation implements Serializable {
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
+@SuperBuilder
+@NoArgsConstructor
+public class AuthorTagRelationDo implements Serializable {
+    /** serialVersionUID */
     private static final long serialVersionUID = 1L;
 
     /**
      * 关联编号
      */
     @Id
+    @Column(name = "relation_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "relation_id", insertable = false, nullable = false)
     private Integer relationId;
 
     /**
      * 作者id
      */
-    @Column(name = "author_id", nullable = false)
+    @Column(name = "author_id")
     private Integer authorId;
 
     /**
      * 标签id
      */
-    @Column(name = "tag_code", nullable = false)
+    @Column(name = "tag_code")
     private Integer tagCode;
 
     /**
@@ -55,5 +69,4 @@ public class AuthorTagRelation implements Serializable {
      */
     @Column(name = "update_time")
     private LocalDateTime updateTime;
-
 }

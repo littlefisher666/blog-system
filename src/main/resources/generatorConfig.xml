@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+    <context id="Mysql" targetRuntime="MyBatis3" defaultModelType="flat">
+
+        <property name="author" value="littlefisher"/>
+        <property name="javaFormatter"
+                  value="com.github.littlefisher.mybatis.generator.SortImportsAndFieldsJavaFormatter"/>
+
+        <plugin type="com.github.littlefisher.mybatis.generator.plugins.MapperPlugin">
+            <property name="mappers"
+                      value="com.github.littlefisher.mybatis.common.CommonMapper"/>
+            <!-- caseSensitive默认false，当数据库表名区分大小写时，可以将该属性设置为true -->
+            <!--<property name="caseSensitive" value="true"/>-->
+        </plugin>
+
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"/>
+        <!--把Example文件位置隔离开-->
+        <plugin type="org.mybatis.generator.plugins.RenameExampleClassPlugin">
+            <property name="searchString" value=".model."/>
+            <property name="replaceString" value=".example."/>
+        </plugin>
+
+        <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+                        connectionURL="jdbc:mysql://106.14.156.120:3306/blog_test"
+                        userId="blog_test"
+                        password="Blog_test_123">
+        </jdbcConnection>
+
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="true"/>
+            <!-- This property is used to specify whether MyBatis Generator should force the use of JSR-310 data types for DATE, TIME,
+            and TIMESTAMP fields, rather than using java.util.Date -->
+            <property name="useJSR310Types" value="true"/>
+        </javaTypeResolver>
+
+        <javaModelGenerator targetPackage="com.github.littlefisher.blog.dao.model" targetProject="src/main/java"/>
+
+        <sqlMapGenerator targetPackage="com.github.littlefisher.blog.dao.mapper" targetProject="src/main/resources"/>
+
+        <javaClientGenerator targetPackage="com.github.littlefisher.blog.dao.mapper" targetProject="src/main/java"
+                             type="XMLMAPPER"/>
+
+        <table tableName="author" domainObjectName="AuthorDo" escapeWildcards="true">
+            <generatedKey column="author_id" sqlStatement="MySql" identity="true"/>
+        </table>
+        <table tableName="author_tag_relation" domainObjectName="AuthorTagRelationDo" escapeWildcards="true">
+            <generatedKey column="relation_id" sqlStatement="MySql" identity="true"/>
+        </table>
+        <table tableName="city" domainObjectName="CityDo" escapeWildcards="true">
+            <generatedKey column="code" sqlStatement="MySql" identity="true"/>
+        </table>
+        <table tableName="post" domainObjectName="PostDo" escapeWildcards="true">
+            <generatedKey column="post_id" sqlStatement="MySql" identity="true"/>
+        </table>
+        <table tableName="post_tag_relation" domainObjectName="PostTagRelationDo" escapeWildcards="true">
+            <generatedKey column="relation_id" sqlStatement="MySql" identity="true"/>
+        </table>
+        <table tableName="province" domainObjectName="ProvinceDo" escapeWildcards="true">
+            <generatedKey column="code" sqlStatement="MySql" identity="true"/>
+        </table>
+        <table tableName="tag" domainObjectName="TagDo" escapeWildcards="true">
+            <generatedKey column="code" sqlStatement="MySql" identity="true"/>
+        </table>
+    </context>
+</generatorConfiguration>

@@ -34,4 +34,18 @@ public interface SftpClient {
      * @return 文件路径
      */
     String uploadFile(String directory, String sftpFileName, byte[] file);
+
+    /**
+     * 删除文件
+     *
+     * @param directory 文件所在目录
+     */
+    void rm(String directory);
+
+    /**
+     * 删除目录
+     *
+     * @param directory 目录
+     */
+    void rmDir(String directory);
 }

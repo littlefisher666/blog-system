@@ -1,10 +1,11 @@
 package com.github.littlefisher.blog.service;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-
 import com.github.littlefisher.blog.controller.dto.PostDto;
 import com.github.littlefisher.blog.controller.dto.SimplePostDto;
+import com.github.littlefisher.blog.controller.dto.request.InsertPostRequestDto;
+import com.github.littlefisher.blog.controller.dto.request.UpdatePostRequestDto;
+import com.github.littlefisher.mybatis.pagehelper.PageInfo;
+import com.github.littlefisher.mybatis.pagehelper.PageParam;
 
 /**
  * @author jinyanan
@@ -20,7 +21,7 @@ public interface PostService {
      * @param page 分页信息
      * @return 博文信息
      */
-    Page<SimplePostDto> queryPostByAuthorId(Integer authorId, Integer tagId, PageRequest page);
+    PageInfo<SimplePostDto> queryPostByAuthorId(Integer authorId, Integer tagId, PageParam page);
 
     /**
      * 查询博文
@@ -31,17 +32,24 @@ public interface PostService {
     PostDto queryPostContent(Integer postId);
 
     /**
-     * 从本地把原来的markdown存入数据库
-     *
-     * @param directoryPath markdown文件所在目录
-     * @param statisticPath 统计文件地址
-     */
-    void loanFromDisk(String directoryPath, String statisticPath);
-
-    /**
      * 增加阅读数
      *
      * @param postId 博文id
      */
     void read(Integer postId);
+
+    /**
+     * 增加博文
+     *
+     * @param request 请求入参
+     */
+    void insertPost(InsertPostRequestDto request);
+
+    /**
+     * 修改博文
+     *
+     * @param postId 博文id
+     * @param request 请求入参
+     */
+    void updatePost(Integer postId, UpdatePostRequestDto request);
 }

@@ -98,6 +98,28 @@ public class SftpClientImpl implements SftpClient {
         }
     }
 
+    @Override
+    public void rm(String directory) {
+        // 连接FTP服务器
+        ChannelSftp channelSftp = connectFtpServer();
+        try {
+            channelSftp.rm(directory);
+        } catch (SftpException e) {
+            throw new SftpServerException("删除文件失败");
+        }
+    }
+
+    @Override
+    public void rmDir(String directory) {
+        // 连接FTP服务器
+        ChannelSftp channelSftp = connectFtpServer();
+        try {
+            channelSftp.rmdir(directory);
+        } catch (SftpException e) {
+            throw new SftpServerException("删除文件目录失败");
+        }
+    }
+
     /**
      * 连接ftp获取ChannelSftp
      */

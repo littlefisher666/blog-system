@@ -1,11 +1,11 @@
 package com.github.littlefisher.blog.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.littlefisher.blog.controller.dto.PostDto;
 import com.github.littlefisher.blog.controller.dto.SimplePostDto;
 import com.github.littlefisher.blog.controller.dto.base.BaseResponseDto;
+import com.github.littlefisher.blog.controller.dto.request.InsertPostRequestDto;
+import com.github.littlefisher.blog.controller.dto.request.UpdatePostRequestDto;
 import com.github.littlefisher.blog.service.PostService;
+import com.github.littlefisher.mybatis.pagehelper.PageInfo;
+import com.github.littlefisher.mybatis.pagehelper.PageParam;
 
 /**
  * @author jinyanan
@@ -35,9 +39,12 @@ public class PostController {
      * @return 博文
      */
     @GetMapping("/author/{authorId}")
-    public BaseResponseDto<Page<SimplePostDto>> queryPostByAuthorId(@PathVariable Integer authorId,
+    public BaseResponseDto<PageInfo<SimplePostDto>> queryPostByAuthorId(@PathVariable Integer authorId,
         @RequestParam Integer pageNum, @RequestParam Integer size) {
-        Page<SimplePostDto> postPage = postService.queryPostByAuthorId(authorId, null, PageRequest.of(pageNum, size));
+        PageInfo<SimplePostDto> postPage = postService.queryPostByAuthorId(authorId, null, PageParam.builder()
+            .pageNum(pageNum)
+            .pageSize(size)
+            .build());
         return BaseResponseDto.success(postPage);
     }
 
@@ -51,9 +58,12 @@ public class PostController {
      * @return 博文
      */
     @GetMapping("/author/{authorId}/tag/{tagId}")
-    public BaseResponseDto<Page<SimplePostDto>> queryPostByAuthorIdAndTag(@PathVariable Integer authorId,
+    public BaseResponseDto<PageInfo<SimplePostDto>> queryPostByAuthorIdAndTag(@PathVariable Integer authorId,
         @PathVariable Integer tagId, @RequestParam Integer pageNum, @RequestParam Integer size) {
-        Page<SimplePostDto> postPage = postService.queryPostByAuthorId(authorId, tagId, PageRequest.of(pageNum, size));
+        PageInfo<SimplePostDto> postPage = postService.queryPostByAuthorId(authorId, tagId, PageParam.builder()
+            .pageNum(pageNum)
+            .pageSize(size)
+            .build());
         return BaseResponseDto.success(postPage);
     }
 
@@ -68,6 +78,12 @@ public class PostController {
         return BaseResponseDto.success(postService.queryPostContent(postId));
     }
 
+    /**
+     * 增加阅读数
+     *
+     * @param postId 博文id
+     * @return 结果
+     */
     @PostMapping("/{postId}/read")
     public BaseResponseDto<Void> read(@PathVariable("postId") Integer postId) {
         postService.read(postId);
@@ -75,16 +91,28 @@ public class PostController {
     }
 
     /**
-     * 从本地把原来的markdown存入数据库
+     * 增加博文
      *
-     * @param directoryPath markdown文件所在目录
-     * @return 处理是否成功
+     * @param request 请求入参
+     * @return 结果
      */
     @PostMapping
-    public BaseResponseDto<Boolean> loanFromDisk(@RequestParam String directoryPath,
-        @RequestParam String statisticPath) {
-        postService.loanFromDisk(directoryPath, statisticPath);
-        return BaseResponseDto.success(true);
+    public BaseResponseDto<Void> insertPost(@RequestBody InsertPostRequestDto request) {
+        postService.insertPost(request);
+        return BaseResponseDto.success();
+    }
+
+    /**
+     * 修改博文
+     *
+     * @param postId 博文编号
+     * @param request 请求入参
+     * @return 结果
+     */
+    @PutMapping("{postId}")
+    public BaseResponseDto<Void> updatePost(@PathVariable Integer postId, @RequestBody UpdatePostRequestDto request) {
+        postService.updatePost(postId, request);
+        return BaseResponseDto.success();
     }
 
 }

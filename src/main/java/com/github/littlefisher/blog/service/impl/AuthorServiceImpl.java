@@ -13,16 +13,16 @@ import com.github.littlefisher.blog.controller.dto.CityDto;
 import com.github.littlefisher.blog.controller.dto.CurrentAuthorDto;
 import com.github.littlefisher.blog.controller.dto.ProvinceDto;
 import com.github.littlefisher.blog.controller.dto.TagDto;
-import com.github.littlefisher.blog.dao.entity.Author;
-import com.github.littlefisher.blog.dao.entity.AuthorTagRelation;
-import com.github.littlefisher.blog.dao.entity.City;
-import com.github.littlefisher.blog.dao.entity.Province;
-import com.github.littlefisher.blog.dao.entity.Tag;
-import com.github.littlefisher.blog.dao.repository.AuthorRepository;
-import com.github.littlefisher.blog.dao.repository.AuthorTagRelationRepository;
-import com.github.littlefisher.blog.dao.repository.CityRepository;
-import com.github.littlefisher.blog.dao.repository.ProvinceRepository;
-import com.github.littlefisher.blog.dao.repository.TagRepository;
+import com.github.littlefisher.blog.dao.AuthorDao;
+import com.github.littlefisher.blog.dao.AuthorTagRelationDao;
+import com.github.littlefisher.blog.dao.CityDao;
+import com.github.littlefisher.blog.dao.ProvinceDao;
+import com.github.littlefisher.blog.dao.TagDao;
+import com.github.littlefisher.blog.dao.model.AuthorDo;
+import com.github.littlefisher.blog.dao.model.AuthorTagRelationDo;
+import com.github.littlefisher.blog.dao.model.CityDo;
+import com.github.littlefisher.blog.dao.model.ProvinceDo;
+import com.github.littlefisher.blog.dao.model.TagDo;
 import com.github.littlefisher.blog.service.AuthorService;
 
 /**
@@ -35,23 +35,23 @@ public class AuthorServiceImpl implements AuthorService {
     private static final Integer DEFAULT_AUTHOR_ID = 1;
 
     @Autowired
-    private AuthorRepository authorRepository;
+    private AuthorDao authorDao;
 
     @Autowired
-    private CityRepository cityRepository;
+    private CityDao cityDao;
 
     @Autowired
-    private ProvinceRepository provinceRepository;
+    private ProvinceDao provinceDao;
 
     @Autowired
-    private AuthorTagRelationRepository authorTagRelationRepository;
+    private AuthorTagRelationDao authorTagRelationDao;
 
     @Autowired
-    private TagRepository tagRepository;
+    private TagDao tagDao;
 
     @Override
     public CurrentAuthorDto queryCurrentAuthor() {
-        Author currentAuthor = authorRepository.getOne(DEFAULT_AUTHOR_ID);
+        AuthorDo currentAuthor = authorDao.selectByPrimaryKey(DEFAULT_AUTHOR_ID);
         return CurrentAuthorDto.builder()
             .authorId(currentAuthor.getAuthorId())
             .address(currentAuthor.getAddress())
@@ -69,8 +69,8 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     private CityDto queryAuthorCity(Integer cityCode) {
-        City city = cityRepository.getOne(cityCode);
-        Province province = provinceRepository.getOne(city.getProvinceCode());
+        CityDo city = cityDao.selectByPrimaryKey(cityCode);
+        ProvinceDo province = provinceDao.selectByPrimaryKey(city.getProvinceCode());
         return CityDto.builder()
             .code(city.getCode())
             .name(city.getName())
@@ -82,10 +82,10 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     private List<TagDto> queryAuthorTag(Integer authorId) {
-        List<AuthorTagRelation> relationList = authorTagRelationRepository.getByAuthorId(authorId);
+        List<AuthorTagRelationDo> relationList = authorTagRelationDao.getByAuthorId(authorId);
         if (CollectionUtils.isNotEmpty(relationList)) {
-            List<Tag> tagList = tagRepository.findAllById(relationList.stream()
-                .map(AuthorTagRelation::getTagCode)
+            List<TagDo> tagList = tagDao.findAllByIdList(relationList.stream()
+                .map(AuthorTagRelationDo::getTagCode)
                 .filter(Objects::nonNull)
                 .distinct()
                 .collect(Collectors.toList()));
@@ -100,7 +100,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     private List<TagDto> queryPostTag(Integer authorId) {
-        List<Tag> tagList = tagRepository.queryPostTagByAuthorId(authorId);
+        List<TagDo> tagList = tagDao.queryPostTagByAuthorId(authorId);
         return tagList.stream()
             .map(input -> TagDto.builder()
                 .name(input.getName())

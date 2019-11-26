@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.littlefisher.blog.dao.mapper.PostDoMapper">
+  <resultMap id="BaseResultMap" type="com.github.littlefisher.blog.dao.model.PostDo">
+    <!--@mbg.generated-->
+    <id column="post_id" jdbcType="INTEGER" property="postId" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="content_url" jdbcType="VARCHAR" property="contentUrl" />
+    <result column="author_id" jdbcType="INTEGER" property="authorId" />
+    <result column="read_times" jdbcType="INTEGER" property="readTimes" />
+    <result column="liked_times" jdbcType="INTEGER" property="likedTimes" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.github.littlefisher.blog.dao.model.PostDo">
+    <!--@mbg.generated-->
+    <result column="preview" jdbcType="LONGVARCHAR" property="preview" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    <!--@mbg.generated-->
+    post_id, title, content_url, author_id, read_times, liked_times, create_time, update_time
+  </sql>
+  <sql id="Blob_Column_List">
+    <!--@mbg.generated-->
+    preview
+  </sql>
+    <update id="updateReadTimes" parameterType="java.lang.Integer">
+        update post set read_times = read_times + 1 where post_id = #{postId}
+    </update>
+    <select id="findByAuthorIdAndTag" resultMap="ResultMapWithBLOBs">
+        select a.post_id, a.title, a.preview, a.content_url, a.author_id, a.read_times, a.liked_times, a.create_time, a.update_time
+        from post a
+        <if test="tagId != ''">
+            LEFT JOIN post_tag_relation b on a.post_id = b.post_id
+        </if>
+        <where>
+            a.author_id = #{authorId}
+            <if test="tagId != ''">
+                and b.tag_id = #{tagId}
+            </if>
+        </where>
+
+    </select>
+</mapper>
