@@ -26,7 +26,9 @@
         <mapper-spring-boot-starter.version>2.1.5</mapper-spring-boot-starter.version>
         <druid-spring-boot-starter.version>1.1.20</druid-spring-boot-starter.version>
         <littlefisher-mybatis.version>0.1-SNAPSHOT</littlefisher-mybatis.version>
-        <mybatis-spring-boot-starter.version>2.1.1</mybatis-spring-boot-starter.version>
+        <!-- 由于druid还无法兼容mybatis最新版本，所以仅能对mybatis做降级处理 -->
+        <mybatis-spring-boot-starter.version>1.3.5</mybatis-spring-boot-starter.version>
+        <mybatis-typehandlers-jsr310.version>1.0.2</mybatis-typehandlers-jsr310.version>
     </properties>
 
     <dependencies>
@@ -38,6 +40,11 @@
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>${mybatis-spring-boot-starter.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-typehandlers-jsr310</artifactId>
+            <version>${mybatis-typehandlers-jsr310.version}</version>
         </dependency>
         <dependency>
             <groupId>tk.mybatis</groupId>

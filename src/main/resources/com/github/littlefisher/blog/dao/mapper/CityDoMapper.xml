@@ -9,6 +9,6 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    code, name, province_code
+    `code`, `name`, `province_code`
   </sql>
 </mapper>

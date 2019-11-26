@@ -8,6 +8,6 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    code, name
+    `code`, `name`
   </sql>
 </mapper>

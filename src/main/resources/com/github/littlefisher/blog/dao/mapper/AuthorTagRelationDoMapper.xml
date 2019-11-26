@@ -11,6 +11,6 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    relation_id, author_id, tag_code, create_time, update_time
+    `relation_id`, `author_id`, `tag_code`, `create_time`, `update_time`
   </sql>
 </mapper>

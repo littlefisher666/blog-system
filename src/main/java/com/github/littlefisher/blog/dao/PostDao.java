@@ -1,9 +1,9 @@
 package com.github.littlefisher.blog.dao;
 
-import java.util.List;
-
 import com.github.littlefisher.blog.configuration.dao.IBaseDao;
 import com.github.littlefisher.blog.dao.model.PostDo;
+import com.github.littlefisher.mybatis.pagehelper.PageInfo;
+import com.github.littlefisher.mybatis.pagehelper.PageParam;
 
 /**
  * @author jinyanan
@@ -16,9 +16,10 @@ public interface PostDao extends IBaseDao<PostDo> {
      *
      * @param authorId 作者id
      * @param tagId 标签id
+     * @param page 分页参数
      * @return 博文
      */
-    List<PostDo> findByAuthorIdAndTag(Integer authorId, Integer tagId);
+    PageInfo<PostDo> findByAuthorIdAndTag(Integer authorId, Integer tagId, PageParam page);
 
     /**
      * 阅读数+1

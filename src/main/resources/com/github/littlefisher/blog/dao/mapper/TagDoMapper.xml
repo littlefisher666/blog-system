@@ -10,6 +10,11 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    code, name, create_time, update_time
+    `code`, `name`, `create_time`, `update_time`
   </sql>
+    <select id="queryPostTagByAuthorId" resultType="com.github.littlefisher.blog.dao.model.TagDo">
+        select distinct b.`code`, b.`name`, b.`create_time`, b.`update_time` from post_tag_relation a
+            left join tag b on a.tag_id = b.`code`
+            left join post c on a.post_id = c.post_id where c.author_id = #{authorId} order by b.name
+    </select>
 </mapper>

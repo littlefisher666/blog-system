@@ -10,6 +10,8 @@
         <property name="author" value="littlefisher"/>
         <property name="javaFormatter"
                   value="com.github.littlefisher.mybatis.generator.SortImportsAndFieldsJavaFormatter"/>
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
 
         <plugin type="com.github.littlefisher.mybatis.generator.plugins.MapperPlugin">
             <property name="mappers"
@@ -45,25 +47,25 @@
         <javaClientGenerator targetPackage="com.github.littlefisher.blog.dao.mapper" targetProject="src/main/java"
                              type="XMLMAPPER"/>
 
-        <table tableName="author" domainObjectName="AuthorDo" escapeWildcards="true">
+        <table tableName="author" domainObjectName="AuthorDo" escapeWildcards="true" delimitAllColumns="true">
             <generatedKey column="author_id" sqlStatement="MySql" identity="true"/>
         </table>
-        <table tableName="author_tag_relation" domainObjectName="AuthorTagRelationDo" escapeWildcards="true">
+        <table tableName="author_tag_relation" domainObjectName="AuthorTagRelationDo" escapeWildcards="true" delimitAllColumns="true">
             <generatedKey column="relation_id" sqlStatement="MySql" identity="true"/>
         </table>
-        <table tableName="city" domainObjectName="CityDo" escapeWildcards="true">
+        <table tableName="city" domainObjectName="CityDo" escapeWildcards="true" delimitAllColumns="true">
             <generatedKey column="code" sqlStatement="MySql" identity="true"/>
         </table>
-        <table tableName="post" domainObjectName="PostDo" escapeWildcards="true">
+        <table tableName="post" domainObjectName="PostDo" escapeWildcards="true" delimitAllColumns="true">
             <generatedKey column="post_id" sqlStatement="MySql" identity="true"/>
         </table>
-        <table tableName="post_tag_relation" domainObjectName="PostTagRelationDo" escapeWildcards="true">
+        <table tableName="post_tag_relation" domainObjectName="PostTagRelationDo" escapeWildcards="true" delimitAllColumns="true">
             <generatedKey column="relation_id" sqlStatement="MySql" identity="true"/>
         </table>
-        <table tableName="province" domainObjectName="ProvinceDo" escapeWildcards="true">
+        <table tableName="province" domainObjectName="ProvinceDo" escapeWildcards="true" delimitAllColumns="true">
             <generatedKey column="code" sqlStatement="MySql" identity="true"/>
         </table>
-        <table tableName="tag" domainObjectName="TagDo" escapeWildcards="true">
+        <table tableName="tag" domainObjectName="TagDo" escapeWildcards="true" delimitAllColumns="true">
             <generatedKey column="code" sqlStatement="MySql" identity="true"/>
         </table>
     </context>

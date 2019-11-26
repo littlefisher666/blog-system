@@ -8,6 +8,9 @@ import com.github.littlefisher.blog.configuration.dao.AbstractBaseDaoImpl;
 import com.github.littlefisher.blog.dao.PostDao;
 import com.github.littlefisher.blog.dao.mapper.PostDoMapper;
 import com.github.littlefisher.blog.dao.model.PostDo;
+import com.github.littlefisher.mybatis.pagehelper.PageInfo;
+import com.github.littlefisher.mybatis.pagehelper.PageParam;
+import com.github.pagehelper.PageHelper;
 
 /**
  * @author jinyanan
@@ -17,8 +20,10 @@ import com.github.littlefisher.blog.dao.model.PostDo;
 public class PostDaoImpl extends AbstractBaseDaoImpl<PostDo, PostDoMapper> implements PostDao {
 
     @Override
-    public List<PostDo> findByAuthorIdAndTag(Integer authorId, Integer tagId) {
-        return getMapper().findByAuthorIdAndTag(authorId, tagId);
+    public PageInfo<PostDo> findByAuthorIdAndTag(Integer authorId, Integer tagId, PageParam page) {
+        PageHelper.startPage(page.getPageNum(), page.getPageSize());
+        List<PostDo> list = getMapper().findByAuthorIdAndTag(authorId, tagId);
+        return new PageInfo<>(list);
     }
 
     @Override

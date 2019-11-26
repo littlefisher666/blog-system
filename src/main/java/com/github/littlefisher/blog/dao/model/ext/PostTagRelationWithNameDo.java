@@ -4,6 +4,7 @@ import com.github.littlefisher.blog.dao.model.PostTagRelationDo;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
@@ -15,6 +16,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @ToString
+@NoArgsConstructor
 public class PostTagRelationWithNameDo extends PostTagRelationDo {
 
     /** 标签名 */

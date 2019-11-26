@@ -22,10 +22,6 @@ public interface TagDoMapper extends CommonMapper<TagDo> {
      * @param authorId 作者id
      * @return 博文标签code
      */
-    // @Query(value =
-    //     "select distinct b.code, b.name, b.create_time, b.update_time from post_tag_relation a left join tag b on a.tag_id = b.code "
-    //         + "left join post c on a.post_id = c.post_id where c.author_id = :authorId  order by b.name",
-    //     nativeQuery = true)
     List<TagDo> queryPostTagByAuthorId(Integer authorId);
 
 }

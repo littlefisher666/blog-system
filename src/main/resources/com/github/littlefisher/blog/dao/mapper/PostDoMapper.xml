@@ -18,11 +18,12 @@
   </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    post_id, title, content_url, author_id, read_times, liked_times, create_time, update_time
+    `post_id`, `title`, `content_url`, `author_id`, `read_times`, `liked_times`, `create_time`, 
+    `update_time`
   </sql>
   <sql id="Blob_Column_List">
     <!--@mbg.generated-->
-    preview
+    `preview`
   </sql>
     <update id="updateReadTimes" parameterType="java.lang.Integer">
         update post set read_times = read_times + 1 where post_id = #{postId}
@@ -30,15 +31,15 @@
     <select id="findByAuthorIdAndTag" resultMap="ResultMapWithBLOBs">
         select a.post_id, a.title, a.preview, a.content_url, a.author_id, a.read_times, a.liked_times, a.create_time, a.update_time
         from post a
-        <if test="tagId != ''">
+        <if test="tagId != null and tagId != ''">
             LEFT JOIN post_tag_relation b on a.post_id = b.post_id
         </if>
         <where>
             a.author_id = #{authorId}
-            <if test="tagId != ''">
+            <if test="tagId != null and tagId != ''">
                 and b.tag_id = #{tagId}
             </if>
         </where>
-
+        order by a.create_time desc
     </select>
 </mapper>

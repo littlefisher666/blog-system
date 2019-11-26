@@ -9,12 +9,19 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
+    <resultMap id="BaseResultMapWithName" type="com.github.littlefisher.blog.dao.model.ext.PostTagRelationWithNameDo">
+        <id column="relation_id" jdbcType="INTEGER" property="relationId" />
+        <result column="post_id" jdbcType="INTEGER" property="postId" />
+        <result column="tag_id" jdbcType="INTEGER" property="tagId" />
+        <result column="name" jdbcType="VARCHAR" property="name" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
   <sql id="Base_Column_List">
     <!--@mbg.generated-->
-    relation_id, post_id, tag_id, create_time, update_time
+    `relation_id`, `post_id`, `tag_id`, `create_time`, `update_time`
   </sql>
-    <select id="findAllTagRelationByPostId"
-            resultType="com.github.littlefisher.blog.dao.model.ext.PostTagRelationWithNameDo">
+    <select id="findAllTagRelationByPostId" resultMap="BaseResultMapWithName">
         select a.relation_id, a.tag_id, a.post_id, a.create_time, a.update_time, b.name from post_tag_relation a left join tag b on a.tag_id = b.code where a.post_id = #{postId}
     </select>
 </mapper>

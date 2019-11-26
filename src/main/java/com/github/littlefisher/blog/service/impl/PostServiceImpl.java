@@ -75,23 +75,25 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PageInfo<SimplePostDto> queryPostByAuthorId(Integer authorId, Integer tagId, PageParam page) {
-        List<PostDo> list = postDao.findByAuthorIdAndTag(authorId, tagId);
-        if (CollectionUtils.isEmpty(list)) {
+        PageInfo<PostDo> pageInfo = postDao.findByAuthorIdAndTag(authorId, tagId, page);
+        if (pageInfo.getSize() == 0) {
             return new PageInfo<>();
         }
-        List<Integer> authorIdList = list.stream()
+        List<Integer> authorIdList = pageInfo.getList()
+            .stream()
             .map(PostDo::getAuthorId)
             .distinct()
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
-        List<Integer> postIdList = list.stream()
+        List<Integer> postIdList = pageInfo.getList()
+            .stream()
             .map(PostDo::getPostId)
             .distinct()
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
         Map<Integer, AuthorDo> authorMap = queryAuthorInfo(authorIdList);
         Map<Integer, List<TagDto>> tagMap = queryPostTag(postIdList);
-        return new PageInfo<>(new PageInfo<>(list), input -> {
+        return new PageInfo<>(pageInfo, input -> {
             AuthorDo author = authorMap.get(input.getAuthorId());
             List<TagDto> tagList = tagMap.get(input.getPostId());
             return SimplePostDto.builder()
