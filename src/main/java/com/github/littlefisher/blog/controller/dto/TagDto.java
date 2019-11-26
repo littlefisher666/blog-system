@@ -1,5 +1,8 @@
 package com.github.littlefisher.blog.controller.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -12,6 +15,8 @@ import lombok.Data;
 public class TagDto {
 
     /** tag名称 */
+    @NotNull
+    @NotBlank
     private String name;
 
     /** tag编码 */

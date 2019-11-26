@@ -1,6 +1,10 @@
 package com.github.littlefisher.blog.controller;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +29,7 @@ import com.github.littlefisher.mybatis.pagehelper.PageParam;
  */
 @RestController
 @RequestMapping("/blog/api/v1/post")
+@Validated
 public class PostController {
 
     @Autowired
@@ -39,8 +44,8 @@ public class PostController {
      * @return 博文
      */
     @GetMapping("/author/{authorId}")
-    public BaseResponseDto<PageInfo<SimplePostDto>> queryPostByAuthorId(@PathVariable Integer authorId,
-        @RequestParam Integer pageNum, @RequestParam Integer size) {
+    public BaseResponseDto<PageInfo<SimplePostDto>> queryPostByAuthorId(@PathVariable @NotNull Integer authorId,
+        @RequestParam @NotNull Integer pageNum, @RequestParam @NotNull Integer size) {
         PageInfo<SimplePostDto> postPage = postService.queryPostByAuthorId(authorId, null, PageParam.builder()
             .pageNum(pageNum)
             .pageSize(size)
@@ -58,8 +63,9 @@ public class PostController {
      * @return 博文
      */
     @GetMapping("/author/{authorId}/tag/{tagId}")
-    public BaseResponseDto<PageInfo<SimplePostDto>> queryPostByAuthorIdAndTag(@PathVariable Integer authorId,
-        @PathVariable Integer tagId, @RequestParam Integer pageNum, @RequestParam Integer size) {
+    public BaseResponseDto<PageInfo<SimplePostDto>> queryPostByAuthorIdAndTag(@PathVariable @NotNull Integer authorId,
+        @PathVariable @NotNull Integer tagId, @RequestParam @NotNull Integer pageNum,
+        @RequestParam @NotNull Integer size) {
         PageInfo<SimplePostDto> postPage = postService.queryPostByAuthorId(authorId, tagId, PageParam.builder()
             .pageNum(pageNum)
             .pageSize(size)
@@ -74,7 +80,7 @@ public class PostController {
      * @return 博文
      */
     @GetMapping("/{postId}/content")
-    public BaseResponseDto<PostDto> queryPostContent(@PathVariable("postId") Integer postId) {
+    public BaseResponseDto<PostDto> queryPostContent(@PathVariable("postId") @NotNull Integer postId) {
         return BaseResponseDto.success(postService.queryPostContent(postId));
     }
 
@@ -85,7 +91,7 @@ public class PostController {
      * @return 结果
      */
     @PostMapping("/{postId}/read")
-    public BaseResponseDto<Void> read(@PathVariable("postId") Integer postId) {
+    public BaseResponseDto<Void> read(@PathVariable("postId") @NotNull Integer postId) {
         postService.read(postId);
         return BaseResponseDto.success();
     }
@@ -97,7 +103,7 @@ public class PostController {
      * @return 结果
      */
     @PostMapping
-    public BaseResponseDto<Void> insertPost(@RequestBody InsertPostRequestDto request) {
+    public BaseResponseDto<Void> insertPost(@RequestBody @NotNull @Valid InsertPostRequestDto request) {
         postService.insertPost(request);
         return BaseResponseDto.success();
     }
@@ -110,7 +116,8 @@ public class PostController {
      * @return 结果
      */
     @PutMapping("{postId}")
-    public BaseResponseDto<Void> updatePost(@PathVariable Integer postId, @RequestBody UpdatePostRequestDto request) {
+    public BaseResponseDto<Void> updatePost(@PathVariable @NotNull Integer postId,
+        @RequestBody @NotNull @Valid UpdatePostRequestDto request) {
         postService.updatePost(postId, request);
         return BaseResponseDto.success();
     }
