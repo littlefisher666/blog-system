@@ -10,6 +10,9 @@ import com.github.littlefisher.blog.dao.TagDao;
 import com.github.littlefisher.blog.dao.example.TagDoExample;
 import com.github.littlefisher.blog.dao.mapper.TagDoMapper;
 import com.github.littlefisher.blog.dao.model.TagDo;
+import com.github.littlefisher.mybatis.pagehelper.PageInfo;
+import com.github.littlefisher.mybatis.pagehelper.PageParam;
+import com.github.pagehelper.PageHelper;
 
 /**
  * @author jinyanan
@@ -36,5 +39,15 @@ public class TagDaoImpl extends AbstractBaseDaoImpl<TagDo, TagDoMapper> implemen
         example.createCriteria()
             .andNameEqualTo(name);
         return Optional.ofNullable(getMapper().selectOneByExample(example));
+    }
+
+    @Override
+    public PageInfo<TagDo> queryTagByName(String name, PageParam page) {
+        TagDoExample example = new TagDoExample();
+        example.createCriteria()
+            .andNameRightLike(name);
+        example.setOrderByClause("create_time desc");
+        PageHelper.startPage(page.getPageNum(), page.getPageSize());
+        return new PageInfo<>(getMapper().selectByExample(example));
     }
 }
