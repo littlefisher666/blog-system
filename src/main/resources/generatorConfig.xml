@@ -68,5 +68,8 @@
         <table tableName="tag" domainObjectName="TagDo" escapeWildcards="true" delimitAllColumns="true">
             <generatedKey column="code" sqlStatement="MySql" identity="true"/>
         </table>
+        <table tableName="user" domainObjectName="UserDo" escapeWildcards="true" delimitAllColumns="true">
+            <generatedKey column="user_id" sqlStatement="MySql" identity="true"/>
+        </table>
     </context>
 </generatorConfiguration>
