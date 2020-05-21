@@ -1,6 +1,7 @@
 package com.github.littlefisher.blog.service.impl;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -17,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.github.littlefisher.blog.configuration.qiniu.client.QiniuClient;
+import com.github.littlefisher.blog.configuration.qiniu.dto.QiniuDownloadResponseDto;
+import com.github.littlefisher.blog.configuration.qiniu.dto.QiniuUploadResponseDto;
 import com.github.littlefisher.blog.configuration.sftp.client.SftpClient;
 import com.github.littlefisher.blog.controller.dto.PostDto;
 import com.github.littlefisher.blog.controller.dto.SimplePostDto;
@@ -62,6 +66,9 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private SftpClient sftpClient;
+
+    @Autowired
+    private QiniuClient qiniuClient;
 
     private static final String PATTERN_STR = "<!--[\\s]*more[\\s]*-->";
 
@@ -162,10 +169,10 @@ public class PostServiceImpl implements PostService {
             AuthorDo author = authorMap.get(post.getAuthorId());
             Map<Integer, List<TagDto>> tagListMap = queryPostTag(Lists.newArrayList(postId));
             List<TagDto> tagList = tagListMap.get(postId);
-            byte[] content = sftpClient.getFile(contentUrl);
+            QiniuDownloadResponseDto qiniuDownloadResponse = qiniuClient.download(post.getFilePath());
             return PostDto.builder()
                 .postId(postId)
-                .content(new String(content))
+                .content(new String(qiniuDownloadResponse.getData(), StandardCharsets.UTF_8))
                 .authorId(post.getAuthorId())
                 .authorName(author == null ? null : author.getName())
                 .likedTimes(post.getLikedTimes())
@@ -273,6 +280,19 @@ public class PostServiceImpl implements PostService {
                     .equals(input.getCode()) && relation.getName()
                     .equals(input.getName())))
             .forEach(tag -> saveTag(postId, tag));
+    }
+
+    @Override
+    public void convert2Qiniu() {
+        List<PostDo> postList = postDao.selectAll();
+        for (PostDo post : postList) {
+            String contentUrl = post.getContentUrl();
+            byte[] file = sftpClient.getFile(contentUrl);
+            String fileName = contentUrl.substring(contentUrl.lastIndexOf('/') + 1);
+            QiniuUploadResponseDto qiniuUploadResponse = qiniuClient.upload(file, fileName);
+            post.setFilePath(qiniuUploadResponse.getFilePath());
+            postDao.updateByPrimaryKey(post);
+        }
     }
 
     private String processContent(String mainBody) {

@@ -1,5 +1,7 @@
 package com.github.littlefisher.blog.dao;
 
+import java.util.List;
+
 import com.github.littlefisher.blog.configuration.dao.IBaseDao;
 import com.github.littlefisher.blog.dao.model.PostDo;
 import com.github.littlefisher.mybatis.pagehelper.PageInfo;
@@ -27,4 +29,11 @@ public interface PostDao extends IBaseDao<PostDo> {
      * @param postId 博文id
      */
     void updateReadTimes(Integer postId);
+
+    /**
+     * 查询所有博文
+     *
+     * @return 博文列表
+     */
+    List<PostDo> selectAll();
 }

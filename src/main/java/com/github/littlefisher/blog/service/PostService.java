@@ -52,4 +52,9 @@ public interface PostService {
      * @param request 请求入参
      */
     void updatePost(Integer postId, UpdatePostRequestDto request);
+
+    /**
+     * 博文从sftp迁移到七牛云
+     */
+    void convert2Qiniu();
 }

@@ -115,4 +115,15 @@ public class PostController {
         return BaseResponseDto.success();
     }
 
+    /**
+     * 博文从sftp迁移到七牛云
+     *
+     * @return 结果
+     */
+    @GetMapping("/convert")
+    public BaseResponseDto<Void> convert2Qiniu() {
+        postService.convert2Qiniu();
+        return BaseResponseDto.success();
+    }
+
 }

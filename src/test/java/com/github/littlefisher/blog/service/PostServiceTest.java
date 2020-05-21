@@ -81,4 +81,9 @@ public class PostServiceTest {
             .build();
         postService.updatePost(366, request);
     }
+
+    @Test
+    public void convert2Qiniu() {
+        postService.convert2Qiniu();
+    }
 }

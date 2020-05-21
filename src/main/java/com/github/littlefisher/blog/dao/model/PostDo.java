@@ -19,13 +19,12 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import tk.mybatis.mapper.annotation.ColumnType;
 
-
 /**
- *
  * post 实体<br>
  * <br>
  *
  * Created on 2019年11月25日
+ *
  * @author littlefisher
  * @version 2.1
  * @since v2.1
@@ -59,6 +58,12 @@ public class PostDo implements Serializable {
      */
     @Column(name = "content_url")
     private String contentUrl;
+
+    /**
+     * 地址
+     */
+    @Column(name = "file_path")
+    private String filePath;
 
     /**
      * 作者id

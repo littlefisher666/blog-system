@@ -30,4 +30,9 @@ public class PostDaoImpl extends AbstractBaseDaoImpl<PostDo, PostDoMapper> imple
     public void updateReadTimes(Integer postId) {
         getMapper().updateReadTimes(postId);
     }
+
+    @Override
+    public List<PostDo> selectAll() {
+        return getMapper().selectAll();
+    }
 }

@@ -23,7 +23,14 @@ public class JasyptTest {
 
     @Test
     public void encrypt() {
-        String password = stringEncryptor.encrypt("TEST");
+        String password = stringEncryptor.encrypt("l7-I7R1J8GFZQHn4dR301jtSGVKOygIKszgi2EeY");
         log.info(password);
+    }
+
+    @Test
+    public void decrypt() {
+        String key = "BuNJTGz262z0IPiPtTp/TB+sjIsv3axh";
+        String decrypt = stringEncryptor.decrypt(key);
+        log.info(decrypt);
     }
 }
